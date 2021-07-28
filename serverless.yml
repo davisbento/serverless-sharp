@@ -2,7 +2,7 @@ service: nodeless
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs14.x
   region: sa-east-1
   memorySize: 256
   iamRoleStatements:
@@ -15,19 +15,24 @@ provider:
 
 functions:
   optimize:
-    handler: optimize.handle
+    handler: optimize.handler
     environment:
-      bucket: lambdabucket4222
+      bucket: davi-007-storage 
     events:
       - s3:
-          bucket: lambdabucket4222
+          bucket: davi-007-storage 
           event: s3:ObjectCreated:*
           rules:
             - prefix: uploads/
             - suffix: .jpg
       - s3:
-          bucket: lambdabucket4222
+          bucket: davi-007-storage 
           event: s3:ObjectCreated:*
           rules:
             - prefix: uploads/
             - suffix: .png
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+  - serverless-offline

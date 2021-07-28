@@ -1,19 +1,17 @@
-'use strict';
-
-const AWS = require('aws-sdk');
-const sharp = require('sharp');
-const { basename, extname } = require('path');
+import * as AWS from 'aws-sdk';
+import sharp from 'sharp';
+import { basename, extname} from 'path';
 
 const S3 = new AWS.S3();
 
-module.exports.handle = async ({ Records: records }) => {
+export const handler = async ({ Records: records }) => {
 	try {
 		await Promise.all(
 			records.map(async record => {
 				const { key } = record.s3.object;
 
 				const image = await S3.getObject({
-					Bucket: process.env.bucket,
+					Bucket: 'davi-007-storage',
 					Key: key,
 				}).promise();
 
@@ -24,7 +22,7 @@ module.exports.handle = async ({ Records: records }) => {
 
 				await S3.putObject({
 					Body: optimized,
-					Bucket: process.env.bucket,
+					Bucket: 'davi-007-storage',
 					ContentType: 'image/jpeg',
 					Key: `compressed/${basename(key, extname(key))}.jpg`,
 				}).promise();
